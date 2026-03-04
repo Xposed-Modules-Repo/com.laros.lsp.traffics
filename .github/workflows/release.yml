@@ -67,11 +67,13 @@ jobs:
           sed -i '/^org\.gradle\.java\.home=/d' gradle.properties
 
       - name: Build release
-        run: ./gradlew :app:assembleRelease
+        run: |
+          version="${GITHUB_REF_NAME#v}"
+          ./gradlew :app:assembleRelease -PVERSION_NAME="${version}" -PVERSION_CODE="${GITHUB_RUN_NUMBER}"
 
       - name: Standardize APK names
         run: |
-          version="${GITHUB_REF_NAME}"
+          version="${GITHUB_REF_NAME#v}"
           mkdir -p dist
 
           shopt -s nullglob
@@ -79,7 +81,11 @@ jobs:
             base="$(basename "$apk")"
             abi=""
 
-            if [[ "$base" =~ ^app-(.+)-release\.apk$ ]]; then
+            if [[ "$base" =~ ^TrafficManager-.+-(.+)-release\.apk$ ]]; then
+              # Already uses desired naming: keep as-is.
+              cp "$apk" "dist/$base"
+              continue
+            elif [[ "$base" =~ ^app-(.+)-release\.apk$ ]]; then
               abi="${BASH_REMATCH[1]}"
             elif [[ "$base" == "app-release.apk" ]]; then
               abi="universal"
@@ -87,7 +93,7 @@ jobs:
               abi="unknown"
             fi
 
-            out="TrafficManager-${version}-${abi}-release.apk"
+            out="TrafficManager-${version}.r${GITHUB_RUN_NUMBER}.${GITHUB_SHA:0:7}-${abi}-release.apk"
             cp "$apk" "dist/$out"
           done
 

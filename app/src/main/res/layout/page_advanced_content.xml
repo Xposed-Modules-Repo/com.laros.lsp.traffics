@@ -5,6 +5,116 @@
     <com.google.android.material.card.MaterialCardView
         style="@style/Widget.Traffic.Card"
         android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/title_self_check"
+                android:textColor="@color/on_background"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/desc_self_check"
+                android:textColor="@color/muted"
+                android:textSize="13sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/selfCheckRefreshButton"
+                style="@style/Widget.Traffic.ButtonOutline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/btn_refresh_self_check" />
+
+            <TextView
+                android:id="@+id/selfCheckPermissions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/self_check_permissions_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckWifi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_wifi_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckSlot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_slot_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckEnabled"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_enabled_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckPowerMode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_power_mode_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckRules"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_rules_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckRoot"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_root_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+
+            <TextView
+                android:id="@+id/selfCheckLastSwitch"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@string/self_check_last_switch_pending"
+                android:textColor="@color/on_background"
+                android:textSize="13sp" />
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        style="@style/Widget.Traffic.Card"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <LinearLayout

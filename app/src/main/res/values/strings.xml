@@ -2,6 +2,7 @@
     <string name="app_name">TrafficManager</string>
     <string name="title_main">TrafficManager</string>
     <string name="subtitle_main">按 Wi-Fi 规则自动切换数据卡</string>
+    <string name="xposed_description">TrafficManager：按 Wi-Fi SSID/BSSID 规则自动切换数据卡</string>
 
     <string name="btn_save">保存配置</string>
     <string name="btn_start">启动自动切卡</string>
