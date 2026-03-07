@@ -115,6 +115,12 @@ class SimSwitchCoordinator(
 
     private fun handleNoWifi(config: AppConfig, nowMs: Long) {
         val target = config.noWifiSlot ?: return
+        val currentSlot = resolver.currentDataSlot()
+        if (currentSlot != null && currentSlot == target) {
+            // Already on target slot, avoid repeated success notifications.
+            resetRuleSession()
+            return
+        }
         if (lastNoWifiAtMs == 0L) {
             lastNoWifiAtMs = nowMs
             markDirty()
