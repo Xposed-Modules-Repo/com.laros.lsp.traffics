@@ -64,53 +64,11 @@ class SwitchTransportChain(private val transports: List<SwitchTransport>) {
         if (lastSeen != null) {
             return VerifyOutcome(VerifyStatus.NOT_VERIFIED, "subscription_manager", lastSeen)
         }
-        val rootSlot = readGlobalDataSlotByRoot()
+        val rootSlot = RootShell.readGlobalDataSlot()
         return when {
             rootSlot == null -> VerifyOutcome(VerifyStatus.UNKNOWN, "settings_global", null)
             rootSlot == targetSlot -> VerifyOutcome(VerifyStatus.VERIFIED, "settings_global", rootSlot)
             else -> VerifyOutcome(VerifyStatus.NOT_VERIFIED, "settings_global", rootSlot)
         }
-    }
-
-    private fun readGlobalDataSlotByRoot(): Int? {
-        val output = runAsRoot("settings get global multi_sim_data_call")
-        if (!output.startsWith("ok:")) return null
-        val value = output.removePrefix("ok:").trim()
-        return value.toIntOrNull()?.takeIf { it in 0..1 }
-    }
-
-    private fun runAsRoot(command: String): String {
-        val suBins = listOf(
-            "su",
-            "/system/bin/su",
-            "/system/xbin/su",
-            "/sbin/su",
-            "/data/adb/ksu/bin/su",
-            "/data/adb/ap/bin/su",
-            "/debug_ramdisk/su"
-        )
-        val traces = mutableListOf<String>()
-        for (suBin in suBins) {
-            val output = runSingleSu(suBin, command)
-            traces += "$suBin=>$output"
-            if (output.startsWith("ok:")) return output
-        }
-        return "err: ${traces.joinToString(" | ")}"
-    }
-
-    private fun runSingleSu(suBin: String, command: String): String {
-        return runCatching {
-            val process = ProcessBuilder(suBin, "-c", command)
-                .redirectErrorStream(true)
-                .start()
-            val finished = process.waitFor(8, TimeUnit.SECONDS)
-            val out = process.inputStream.bufferedReader().readText().trim()
-            if (!finished) {
-                process.destroyForcibly()
-                return "err: timeout"
-            }
-            val code = process.exitValue()
-            if (code == 0) "ok: $out" else "err($code): $out"
-        }.getOrElse { "err: ${it.javaClass.simpleName}: ${it.message}" }
     }
 }
