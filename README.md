@@ -86,6 +86,7 @@ TrafficManager 是一个 Android 应用 + LSPosed 模块，用于根据 Wi-Fi SS
   "noWifiImmediate": true,
   "logRetentionDays": 7,
   "logMaxMb": 10,
+  "appendDefaultRootTemplates": true,
   "rootCommandTemplates": [
     "cmd phone set-default-data-subscription {subId}",
     "cmd phone set-data-subscription {subId}",
@@ -112,6 +113,7 @@ TrafficManager 是一个 Android 应用 + LSPosed 模块，用于根据 Wi-Fi SS
 - `fixedLeaveSlot`: 离开 Wi-Fi 时强制切到的卡（null 表示按逻辑决定）。
 - `noWifiSlot` / `noWifiImmediate`: 无 Wi-Fi 时的目标卡与是否立即切换。
 - `logRetentionDays` / `logMaxMb`: 日志保留天数与单日志大小上限。
+- `appendDefaultRootTemplates`: 是否在自定义 root 指令后自动补齐内置默认模板。
 - `rootCommandTemplates`: root 兜底时使用的系统命令模板（可保留多条）。
 - `rules`: Wi-Fi 规则列表，`priority` 越大优先级越高，`targetSlot` 0/1 表示 SIM1/SIM2。
 

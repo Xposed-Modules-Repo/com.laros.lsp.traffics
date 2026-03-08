@@ -83,8 +83,12 @@ class ConfigStore(private val context: Context) {
             val line = jsonTemplates.optString(i)
             if (line.isNotBlank()) templates += line
         }
-
-        val mergedTemplates = (templates + AppConfig().rootCommandTemplates).distinct()
+        val appendDefaultRootTemplates = root.optBoolean("appendDefaultRootTemplates", true)
+        val mergedTemplates = if (appendDefaultRootTemplates) {
+            (templates + AppConfig().rootCommandTemplates).distinct()
+        } else {
+            templates
+        }
 
         return AppConfig(
             enabled = root.optBoolean("enabled", true),
@@ -108,6 +112,7 @@ class ConfigStore(private val context: Context) {
             noWifiImmediate = root.optBoolean("noWifiImmediate", false),
             logRetentionDays = root.optInt("logRetentionDays", 7).coerceIn(1, 30),
             logMaxMb = root.optInt("logMaxMb", 10).coerceIn(1, 100),
+            appendDefaultRootTemplates = appendDefaultRootTemplates,
             rootCommandTemplates = mergedTemplates,
             rules = rules
         )
@@ -128,6 +133,7 @@ class ConfigStore(private val context: Context) {
         root.put("noWifiImmediate", config.noWifiImmediate)
         root.put("logRetentionDays", config.logRetentionDays)
         root.put("logMaxMb", config.logMaxMb)
+        root.put("appendDefaultRootTemplates", config.appendDefaultRootTemplates)
 
         val cmds = JSONArray()
         config.rootCommandTemplates.forEach { cmds.put(it) }

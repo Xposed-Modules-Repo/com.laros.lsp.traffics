@@ -3,7 +3,6 @@ package com.laros.lsp.traffics
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
@@ -23,7 +22,9 @@ class SettingsActivity : AppCompatActivity() {
         setupSystemBars()
 
         binding.settingsToolbar.setNavigationOnClickListener { finish() }
-        binding.itemSelfCheck.setOnClickListener { openAdvanced() }
+        binding.itemSelfCheck.setOnClickListener {
+            startActivity(Intent(this, SelfCheckActivity::class.java))
+        }
         binding.itemAdvanced.setOnClickListener { openAdvanced() }
         binding.itemAbout.setOnClickListener { startActivity(Intent(this, AboutActivity::class.java)) }
         binding.itemDisclaimer.setOnClickListener { showDisclaimerDialog() }
@@ -34,10 +35,6 @@ class SettingsActivity : AppCompatActivity() {
             .putExtra(MainActivity.EXTRA_OPEN_PAGE, MainActivity.PAGE_ADVANCED)
             .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(intent)
-    }
-
-    private fun showComingSoon() {
-        Toast.makeText(this, R.string.settings_coming_soon, Toast.LENGTH_SHORT).show()
     }
 
     private fun showDisclaimerDialog() {

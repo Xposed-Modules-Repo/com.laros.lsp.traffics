@@ -16,6 +16,7 @@ import androidx.core.view.updatePadding
 import androidx.lifecycle.lifecycleScope
 import com.laros.lsp.traffics.config.ConfigStore
 import com.laros.lsp.traffics.core.DataSlotResolver
+import com.laros.lsp.traffics.core.RootShell
 import com.laros.lsp.traffics.core.WifiSnapshotProvider
 import com.laros.lsp.traffics.databinding.ActivitySelfCheckBinding
 import com.laros.lsp.traffics.config.SwitchStateStore
@@ -25,7 +26,6 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class SelfCheckActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySelfCheckBinding
@@ -246,31 +246,7 @@ class SelfCheckActivity : AppCompatActivity() {
     }
 
     private fun isRootAvailable(): Boolean {
-        val suBins = listOf(
-            "su",
-            "/system/bin/su",
-            "/system/xbin/su",
-            "/sbin/su",
-            "/data/adb/ksu/bin/su",
-            "/data/adb/ap/bin/su",
-            "/debug_ramdisk/su"
-        )
-        for (suBin in suBins) {
-            val ok = runCatching {
-                val process = ProcessBuilder(suBin, "-c", "id")
-                    .redirectErrorStream(true)
-                    .start()
-                val finished = process.waitFor(2, TimeUnit.SECONDS)
-                if (!finished) {
-                    process.destroyForcibly()
-                    false
-                } else {
-                    process.exitValue() == 0
-                }
-            }.getOrDefault(false)
-            if (ok) return true
-        }
-        return false
+        return RootShell.hasRootAccess()
     }
 
     private fun isLocationEnabled(): Boolean {

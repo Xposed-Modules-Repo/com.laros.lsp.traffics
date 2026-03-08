@@ -40,8 +40,7 @@ import com.laros.lsp.traffics.databinding.PageHomeContentBinding
 import com.laros.lsp.traffics.databinding.PageRulesContentBinding
 import com.laros.lsp.traffics.model.AppConfig
 import com.laros.lsp.traffics.model.SwitchRule
-import com.laros.lsp.traffics.service.AutoSwitchService
-import com.laros.lsp.traffics.service.PowerSaveScheduler
+import com.laros.lsp.traffics.service.RunModeController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -141,8 +140,7 @@ class MainActivity : AppCompatActivity() {
         homeBinding.stopButton.setOnClickListener {
             val current = configStore.load()
             persistConfig(current.copy(enabled = false))
-            stopForegroundServiceIfNeeded()
-            PowerSaveScheduler.cancel(applicationContext)
+            RunModeController.disable(this)
             unregisterPowerSaveNetworkCallback()
             showStatus(getString(R.string.status_auto_switch_disabled))
         }
@@ -676,23 +674,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun startModeWorker(source: String) {
         val config = configStore.load()
-        if (!config.enabled) return
-        if (config.powerSaveMode) {
-            PowerSaveScheduler.schedule(applicationContext)
+        RunModeController.apply(
+            context = this,
+            config = config,
+            source = source
+        ) {
             lifecycleScope.launch(Dispatchers.IO) {
-                SwitchRunner(applicationContext).runOnce(source)
+                SwitchRunner(applicationContext).runOnce(it)
             }
-            stopForegroundServiceIfNeeded()
-        } else {
-            PowerSaveScheduler.cancel(applicationContext)
-            val svc = Intent(this, AutoSwitchService::class.java)
-            ContextCompat.startForegroundService(this, svc)
         }
-    }
-
-    private fun stopForegroundServiceIfNeeded() {
-        val svc = Intent(this, AutoSwitchService::class.java)
-        stopService(svc)
     }
 
     private fun modeDetail(powerSave: Boolean): String {

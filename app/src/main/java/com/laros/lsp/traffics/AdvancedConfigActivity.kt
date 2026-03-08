@@ -1,6 +1,5 @@
 package com.laros.lsp.traffics
 
-import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
@@ -16,8 +15,7 @@ import androidx.core.view.updatePadding
 import com.laros.lsp.traffics.config.ConfigStore
 import com.laros.lsp.traffics.databinding.ActivityAdvancedConfigBinding
 import com.laros.lsp.traffics.model.AppConfig
-import com.laros.lsp.traffics.service.AutoSwitchService
-import com.laros.lsp.traffics.service.PowerSaveScheduler
+import com.laros.lsp.traffics.service.RunModeController
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import androidx.lifecycle.lifecycleScope
@@ -228,23 +226,15 @@ class AdvancedConfigActivity : AppCompatActivity() {
 
     private fun startModeWorker(source: String) {
         val config = configStore.load()
-        if (!config.enabled) return
-        if (config.powerSaveMode) {
-            PowerSaveScheduler.schedule(applicationContext)
+        RunModeController.apply(
+            context = this,
+            config = config,
+            source = source
+        ) {
             lifecycleScope.launch(Dispatchers.IO) {
-                SwitchRunner(applicationContext).runOnce(source)
+                SwitchRunner(applicationContext).runOnce(it)
             }
-            stopForegroundServiceIfNeeded()
-        } else {
-            PowerSaveScheduler.cancel(applicationContext)
-            val svc = Intent(this, AutoSwitchService::class.java)
-            ContextCompat.startForegroundService(this, svc)
         }
-    }
-
-    private fun stopForegroundServiceIfNeeded() {
-        val svc = Intent(this, AutoSwitchService::class.java)
-        stopService(svc)
     }
 
     private fun Int.dp(): Int = (this * resources.displayMetrics.density).toInt()
